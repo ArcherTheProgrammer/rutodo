@@ -11,7 +11,7 @@ pub struct ToDoArgs {
 pub enum EntityType {
     //Declaring other commands when two of them are holding type Element, and the last one is just Show type
     Add(Element),
-    Remove(Element),
+    Remove(Id),
     Show,
 }
 
@@ -19,4 +19,9 @@ pub enum EntityType {
 pub struct Element {
     //Declaring how element struct looks like
     pub element: String,
+}
+
+#[derive(Debug, Args)]
+pub struct Id {
+    pub id: u32,
 }
