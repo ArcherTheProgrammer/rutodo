@@ -7,6 +7,7 @@ mod args;
 
 use std::{
     clone,
+    fmt::write,
     fs::{self, OpenOptions},
     io::{BufRead, BufReader, Read, Write},
 };
@@ -74,36 +75,32 @@ fn main() {
             let content = format!("{}\t{}\t", to_add.id, elem.element);
             todo.push_str(&content);
             // fs::write("db.txt", todo.as_bytes());
-            writeln!(db, "{}", todo);
+            writeln!(db, "{}", todo).unwrap();
         }
         EntityType::Remove(elem) => {
             //Writing a file to string and modifing a string, then write it to file
 
             let mut content: String = String::new();
             content = fs::read_to_string("db.txt").unwrap();
-            println!("{:?}", content);
+            let mut lines: Vec<String> = content.split("\n").map(|s| s.to_string()).collect();
+            for i in 0..lines.len() - 1 {
+                if lines[i].contains(&elem.id.to_string()) {
+                    lines.remove(i);
+                }
+            }
+            fs::write("db.txt", "").unwrap();
+            for line in lines {
+                writeln!(db, "{}", line).unwrap();
+            }
+            // for line in db_read.lines() {
+            //     let mut temp = Vec::new();
+            //     if !line.unwrap().contains(&elem.id.to_string()) {
+            //         temp.push(line.as_ref());
+            //     }
+            //     buffer.push(temp);
+            // }
 
             //Method below doesn't work
-
-            /*println!("{}", elem.id);
-            db.write("".as_bytes());
-            for line in db_read.lines() {
-                for ch in line.as_ref().unwrap().chars() {
-                    if ch.is_numeric() {
-                        match ch.to_digit(10) {
-                            Some(el) => {
-                                if el != elem.id {
-                                    writeln!(db, "{}", line.as_ref().unwrap());
-                                }
-                            }
-                            None => {
-                                println!("Not digit");
-                            }
-                        }
-                    }
-                }
-
-            }*/
         }
         EntityType::Show => {
             println!("Show command aplied!");
